@@ -1,0 +1,6 @@
+@GosteriZamani.API_HostAddress = http://localhost:5207
+
+GET {{GosteriZamani.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

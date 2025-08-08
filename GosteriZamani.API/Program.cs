@@ -1,12 +1,26 @@
+using FluentValidation;
 using GosteriZamani.API.DbContexts;
+using GosteriZamani.API.Filters;
+using GosteriZamani.API.Models.Category;
+using GosteriZamani.API.Services;
+using GosteriZamani.API.Validations.Category;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// validator kaydý
+builder.Services.AddScoped<IValidator<CreateCategoryDto>, CreateCategoryValidator>();
 
-builder.Services.AddControllers();
+// filter kendisi DI'de olmalý
+builder.Services.AddScoped<ValidationFilter>();
+
+// AddControllers içinde filter'ý DI üzerinden ekle (AddService)
+builder.Services.AddControllers(options =>
+{
+    options.Filters.AddService<ValidationFilter>(); // <- çok önemli
+});
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -18,6 +32,13 @@ builder.Services.AddDbContext<GosteriZamaniDbContext>(options =>
             options.MigrationsAssembly(Assembly.GetAssembly(typeof(GosteriZamaniDbContext))!.GetName().Name);
         });
 });
+
+
+
+//Register services
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 
 
 var app = builder.Build();

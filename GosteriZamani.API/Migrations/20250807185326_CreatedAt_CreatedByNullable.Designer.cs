@@ -4,6 +4,7 @@ using GosteriZamani.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GosteriZamani.API.Migrations
 {
     [DbContext(typeof(GosteriZamaniDbContext))]
-    partial class GosteriZamaniDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250807185326_CreatedAt_CreatedByNullable")]
+    partial class CreatedAt_CreatedByNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace GosteriZamani.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CategoryEvent", b =>
-                {
-                    b.Property<string>("CategoriesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EventsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CategoriesId", "EventsId");
-
-                    b.HasIndex("EventsId");
-
-                    b.ToTable("CategoryEvent");
-                });
 
             modelBuilder.Entity("GosteriZamani.API.Entities.Category", b =>
                 {
@@ -78,10 +66,6 @@ namespace GosteriZamani.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -105,8 +89,6 @@ namespace GosteriZamani.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Cities");
                 });
@@ -202,51 +184,15 @@ namespace GosteriZamani.API.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("CategoryEvent", b =>
-                {
-                    b.HasOne("GosteriZamani.API.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GosteriZamani.API.Entities.Event", null)
-                        .WithMany()
-                        .HasForeignKey("EventsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GosteriZamani.API.Entities.City", b =>
-                {
-                    b.HasOne("GosteriZamani.API.Entities.Country", "Country")
-                        .WithMany("Cities")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("GosteriZamani.API.Entities.Event", b =>
                 {
                     b.HasOne("GosteriZamani.API.Entities.City", "City")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("City");
-                });
-
-            modelBuilder.Entity("GosteriZamani.API.Entities.City", b =>
-                {
-                    b.Navigation("Events");
-                });
-
-            modelBuilder.Entity("GosteriZamani.API.Entities.Country", b =>
-                {
-                    b.Navigation("Cities");
                 });
 #pragma warning restore 612, 618
         }

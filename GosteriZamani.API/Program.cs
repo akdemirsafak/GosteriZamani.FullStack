@@ -43,6 +43,7 @@ builder.Services.AddDbContext<GosteriZamaniDbContext>((sp,options) =>
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 var app = builder.Build();
 

@@ -4,6 +4,7 @@ using GosteriZamani.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GosteriZamani.API.Migrations
 {
     [DbContext(typeof(GosteriZamaniDbContext))]
-    partial class GosteriZamaniDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250811085236_EventEntityPropNameUpdated")]
+    partial class EventEntityPropNameUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

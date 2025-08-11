@@ -12,7 +12,7 @@ public sealed class Event : BaseEntity, IAuditableEntity
     public City City { get; set; }
     public string CityId { get; set; }
     public string? ImageUrl { get; set; }
-    public DateTime EventDate { get; set; }
+    public DateTime Date { get; set; }
     public string Organizer { get; set; }
     public ICollection<Category>? Categories { get; set; }
 

@@ -20,7 +20,7 @@ public class CountryService : ICountryService
         var existingCountry = await _context.Countries
             .FirstOrDefaultAsync(c => c.Name == createCountryDto.Name);
         if (existingCountry is not null)
-            {
+        {
             throw new ArgumentException("Country already exists.");
         }
         var country = createCountryDto.Adapt<Country>();

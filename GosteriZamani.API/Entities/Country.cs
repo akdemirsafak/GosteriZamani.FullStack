@@ -8,7 +8,7 @@ public sealed class Country : BaseEntity, IAuditableEntity
         Cities = new HashSet<City>();
     }
     public string Name { get; set; }
-    public string Code { get; set; }
+    public string? Code { get; set; }
     public ICollection<City> Cities { get; set; }
     public DateTime? CreatedAt { get; set; }
     public string? CreatedBy { get; set; }

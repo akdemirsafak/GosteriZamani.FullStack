@@ -1,3 +1,3 @@
 ﻿namespace GosteriZamani.API.Models.City;
 
-public record CreateCityDto(string Name, string Code,string CountryId);
+public record CreateCityDto(string Name, string CountryId, string? Code=null);

@@ -7,7 +7,7 @@ public class City : BaseEntity, IAuditableEntity
         Events = new HashSet<Event>();
     }
     public string Name { get; set; }
-    public string Code { get; set; }
+    public string? Code { get; set; }
     public string CountryId { get; set; }
     public Country Country { get; set; }
     public ICollection<Event> Events { get; set; }

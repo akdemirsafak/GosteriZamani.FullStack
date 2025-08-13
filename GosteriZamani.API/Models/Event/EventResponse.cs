@@ -6,7 +6,7 @@ public class EventResponse : ResponseBase
     public string? Detail { get; set; }
     public DateTime Date { get; set; }
     public List<EventCategoryDto> Categories { get; set; } = new();
-    public string City { get; set; }
+    public string CityName { get; set; }
     public string CityId { get; set; }
 
 }

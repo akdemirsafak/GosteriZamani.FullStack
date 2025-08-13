@@ -1,13 +1,12 @@
-﻿using GosteriZamani.API.Models.Event;
-using GosteriZamani.API.Services;
+﻿using GosteriZamani.API.Base;
+using GosteriZamani.API.Models.Event;
+using GosteriZamani.API.AbstractServices;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace GosteriZamani.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
-public class EventController : ControllerBase
+
+public class EventController : CustomBaseController
 {
     private readonly IEventService _eventService;
 
@@ -19,29 +18,29 @@ public class EventController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _eventService.GetAllAsync());
+        return CreateActionResult(await _eventService.GetAllAsync());
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        return Ok(await _eventService.GetByIdAsync(id));
+        return CreateActionResult(await _eventService.GetByIdAsync(id));
     }
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateEventDto createEventDto)
     {
         // Here you would typically add logic to save the event data
-        return Ok(await _eventService.CreateAsync(createEventDto));
+        return CreateActionResult(await _eventService.CreateAsync(createEventDto));
     }
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] UpdateEventDto updateEventDto)
     {
         // Here you would typically add logic to update the event data
-        return Ok(await _eventService.UpdateAsync(updateEventDto));
+        return CreateActionResult(await _eventService.UpdateAsync(updateEventDto));
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        await _eventService.DeleteAsync(id);
-        return NoContent();
+       return CreateActionResult(await _eventService.DeleteAsync(id));
+
     }
 }

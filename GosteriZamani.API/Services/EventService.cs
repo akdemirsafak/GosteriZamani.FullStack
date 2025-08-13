@@ -1,4 +1,6 @@
-﻿using GosteriZamani.API.DbContexts;
+﻿using GosteriZamani.API.AbstractServices;
+using GosteriZamani.API.Base;
+using GosteriZamani.API.DbContexts;
 using GosteriZamani.API.Entities;
 using GosteriZamani.API.Models.Event;
 using Mapster;
@@ -15,7 +17,7 @@ public sealed class EventService : IEventService
         _dbContext = dbContext;
     }
 
-    public async Task<EventResponse> CreateAsync(CreateEventDto createEventDto)
+    public async Task<AppResult<EventResponse>> CreateAsync(CreateEventDto createEventDto)
     {
         var city = await _dbContext.Cities.FindAsync(createEventDto.CityId);
         var categories = await _dbContext.Categories
@@ -33,44 +35,43 @@ public sealed class EventService : IEventService
         };
         await _dbContext.Events.AddAsync(@event);
         await _dbContext.SaveChangesAsync();
-        return @event.Adapt<EventResponse>();
+
+        return AppResult<EventResponse>.Success(@event.Adapt<EventResponse>());
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task<AppResult<NoContentDto>> DeleteAsync(string id)
     {
         var @event= await _dbContext.Events.FindAsync(id);
         _dbContext.Events.Remove(@event);
         await _dbContext.SaveChangesAsync();
+        return AppResult<NoContentDto>.Success(204);
     }
 
-    public async Task<List<EventResponse>> GetAllAsync()
+    public async Task<AppResult<List<EventResponse>>> GetAllAsync()
     {
         var events = await _dbContext.Events
             .Include(cat=>cat.Categories)
             .Include(city=> city.City)
             .AsNoTracking().ToListAsync();
-        return events.Select(e => new EventResponse
-        {
-            Id = e.Id,
-            Name = e.Name,
-            Detail = e.Detail,
-            Date = e.Date,
-            Categories = e.Categories.Adapt<List<EventCategoryDto>>(),
-            City = e.City.Name
-        }).ToList();
+
+
+        var eventsResponse = events.Adapt<List<EventResponse>>();
+
+        return AppResult<List<EventResponse>>.Success(eventsResponse);
     }
 
-    public async Task<EventResponse?> GetByIdAsync(string id)
+    public async Task<AppResult<EventResponse>> GetByIdAsync(string id)
     {
         var @event = await _dbContext.Events
             .Include(cat => cat.Categories)
             .Include(city => city.City)
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == id);
-        return @event.Adapt<EventResponse>();
+        return AppResult<EventResponse>.Success(@event.Adapt<EventResponse>());
+
     }
 
-    public async Task<EventResponse> UpdateAsync(UpdateEventDto updateEventDto)
+    public async Task<AppResult<EventResponse>> UpdateAsync(UpdateEventDto updateEventDto)
     {
         var @event = await _dbContext.Events.FindAsync(updateEventDto.Id);
         var city = await _dbContext.Cities.FindAsync(updateEventDto.CityId);
@@ -92,6 +93,6 @@ public sealed class EventService : IEventService
         @event.Categories = categories;
         _dbContext.Events.Update(@event);
         await _dbContext.SaveChangesAsync();
-        return @event.Adapt<EventResponse>();
+        return AppResult<EventResponse>.Success(@event.Adapt<EventResponse>());
     }
 }

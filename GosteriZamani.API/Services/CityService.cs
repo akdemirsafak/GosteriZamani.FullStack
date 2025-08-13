@@ -1,4 +1,6 @@
-﻿using GosteriZamani.API.DbContexts;
+﻿using GosteriZamani.API.AbstractServices;
+using GosteriZamani.API.Base;
+using GosteriZamani.API.DbContexts;
 using GosteriZamani.API.Entities;
 using GosteriZamani.API.Models.City;
 using Mapster;
@@ -15,43 +17,45 @@ public class CityService : ICityService
         _context = context;
     }
 
-    public async Task<CityResponse> CreateAsync(CreateCityDto createCityDto)
+    public async Task<AppResult<CityResponse>> CreateAsync(CreateCityDto createCityDto)
     {
         City existingCity = await _context.Cities
             .FirstOrDefaultAsync(c => c.Name == createCityDto.Name && c.CountryId == createCityDto.CountryId);
         if (existingCity is not null)
         {
-            throw new ArgumentException("City already exists in the specified country.");
+            AppResult<CityResponse> result = AppResult<CityResponse>.Fail("City already exists in this country.");
         }
         City city= createCityDto.Adapt<City>();
         var country = await _context.Countries.FindAsync(createCityDto.CountryId);
         city.Country = country;
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-        return city.Adapt<CityResponse>();
+        return AppResult<CityResponse>.Success(city.Adapt<CityResponse>(), 201);
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task<AppResult<NoContentDto>> DeleteAsync(string id)
     {
         City city= await _context.Cities.FindAsync(id);
         _context.Cities.Remove(city);
         await _context.SaveChangesAsync();
+        return AppResult<NoContentDto>.Success(204);
     }
 
-    public async Task<List<CityResponse>> GetAllAsync()
+    public async Task<AppResult<List<CityResponse>>> GetAllAsync()
     {
         var cities= await _context.Cities.Include(x=>x.Country).AsNoTracking().ToListAsync();
         var cityResponse= cities.Adapt<List<CityResponse>>();
-        return cityResponse;
+        return AppResult<List<CityResponse>>.Success(cityResponse);
     }
 
-    public async Task<CityResponse> GetByIdAsync(string id)
+    public async Task<AppResult<CityResponse>> GetByIdAsync(string id)
     {
         City? city = await _context.Cities.Include(x=>x.Country).FirstOrDefaultAsync(x=>x.Id==id);
-        return city.Adapt<CityResponse>();
+
+        return AppResult<CityResponse>.Success(city.Adapt<CityResponse>());
     }
 
-    public async Task<CityResponse> UpdateAsync(UpdateCityDto updateCityDto)
+    public async Task<AppResult<CityResponse>> UpdateAsync(UpdateCityDto updateCityDto)
     {
         var country = await _context.Countries.FindAsync(updateCityDto.CountryId);
         if (country == null)
@@ -67,6 +71,7 @@ public class CityService : ICityService
         city.CountryId = updateCityDto.CountryId;
         _context.Cities.Update(city);
         await _context.SaveChangesAsync();
-        return city.Adapt<CityResponse>();
+        return AppResult<CityResponse>.Success(city.Adapt<CityResponse>(), 200);
+
     }
 }
